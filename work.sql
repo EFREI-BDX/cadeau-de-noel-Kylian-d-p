@@ -1,6 +1,5 @@
-DROP VIEW IF EXISTS dv01_Sale;
-
-CREATE VIEW dv01_Sale AS
+DROP VIEW IF EXISTS dv01_sale;
+CREATE VIEW dv01_sale AS
 SELECT vente.id,
        vente.date,
        vente.numVente AS orderNumber,
@@ -8,8 +7,8 @@ SELECT vente.id,
 FROM vente
 INNER JOIN consommation ON vente.id_Consommation = consommation.id;
 
-DROP VIEW IF EXISTS dv01_SaleLine;
-CREATE VIEW dv01_SaleLine AS
+DROP VIEW IF EXISTS dv01_saleline;
+CREATE VIEW dv01_saleline AS
 SELECT lignedevente.id,
        produit.denomination AS product,
        typedetaille.denomination AS size,
@@ -30,7 +29,7 @@ DROP PROCEDURE IF EXISTS getAllSales;
 DELIMITER //
 CREATE PROCEDURE getAllSales()
 BEGIN
-    SELECT * FROM dv01_Sale;
+    SELECT * FROM dv01_sale;
 END //
 DELIMITER ;
 
@@ -50,7 +49,7 @@ DROP PROCEDURE IF EXISTS getAllSalesLines;
 DELIMITER //
 CREATE PROCEDURE getAllSalesLines()
 BEGIN
-    SELECT * FROM dv01_SaleLine;
+    SELECT * FROM dv01_saleline;
 END //
 DELIMITER ;
 
@@ -86,20 +85,20 @@ BEGIN
 END //
 DELIMITER ;
 
-DROP PROCEDURE IF EXISTS createSaleLine;
-
-DELIMITER //
-CREATE PROCEDURE addSaleLine(
-    IN _orderNumber varchar(10),
-    IN _product varchar(50),
-    IN _size varchar(10),
-    IN _quantity int,
-    IN _option1 varchar(50),
-    IN _option2 varchar(50),
-    IN _option3 varchar(50),
-    IN _option4 varchar(50)
-)
-BEGIN
-
-END //
-DELIMITER ;
+# DROP PROCEDURE IF EXISTS addSaleLine;
+#
+# DELIMITER //
+# CREATE PROCEDURE addSaleLine(
+#     IN _orderNumber varchar(10),
+#     IN _product varchar(50),
+#     IN _size varchar(10),
+#     IN _quantity int,
+#     IN _option1 varchar(50),
+#     IN _option2 varchar(50),
+#     IN _option3 varchar(50),
+#     IN _option4 varchar(50)
+# )
+# BEGIN
+#
+# END //
+# DELIMITER ;
