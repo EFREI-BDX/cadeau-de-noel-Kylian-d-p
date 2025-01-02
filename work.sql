@@ -14,7 +14,7 @@ SELECT lignedevente.id,
        typedetaille.denomination AS size,
        lignedevente.quantite AS quantity,
        lignedevente.prix AS unitPrice,
-       GROUP_CONCAT(supplement.denomination SEPARATOR ', ') AS options,
+       GROUP_CONCAT(supplement.denomination SEPARATOR ',') AS options,
        lignedevente.id_Vente AS id_dv01_sale
 FROM lignedevente
 INNER JOIN produit ON lignedevente.id_Produit = produit.id
@@ -73,7 +73,15 @@ CREATE PROCEDURE createSale(
     IN _onSite VARCHAR(1)
 )
 BEGIN
+    DECLARE exist INT;
     DECLARE errorMessage VARCHAR(255);
+
+    SET exist =(SELECT COUNT(*) FROM dv01_sale WHERE orderNumber != _orderNumber);
+
+    IF exist = 1 THEN
+        SET errorMessage = CONCAT('sale with id = "', _orderNumber, '" already exists');
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = errorMessage;
+    END IF;
 
     IF _onSite != 'Y' AND _onSite != 'N' THEN
         SET errorMessage = CONCAT('onSite cannot be "', _onSite, '" only "Y" or "N"');

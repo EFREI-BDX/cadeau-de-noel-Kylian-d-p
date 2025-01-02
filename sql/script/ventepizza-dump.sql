@@ -79,7 +79,7 @@ SET character_set_client = @saved_cs_client;
 /*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `dv01_saleline` AS select `lignedevente`.`id` AS `id`,`produit`.`denomination` AS `product`,`typedetaille`.`denomination` AS `size`,`lignedevente`.`quantite` AS `quantity`,`lignedevente`.`prix` AS `unitPrice`,group_concat(`supplement`.`denomination` separator ', ') AS `options`,`lignedevente`.`id_Vente` AS `id_dv01_sale` from ((((`lignedevente` join `produit` on((`lignedevente`.`id_Produit` = `produit`.`id`))) left join `typedetaille` on((`lignedevente`.`id_TypeDeTaille` = `typedetaille`.`id`))) left join `lignedoption` on((`lignedevente`.`id` = `lignedoption`.`id_LigneDeVente`))) left join `supplement` on((`lignedoption`.`id_Supplement` = `supplement`.`id`))) group by `lignedevente`.`id` */;
+/*!50001 VIEW `dv01_saleline` AS select `lignedevente`.`id` AS `id`,`produit`.`denomination` AS `product`,`typedetaille`.`denomination` AS `size`,`lignedevente`.`quantite` AS `quantity`,`lignedevente`.`prix` AS `unitPrice`,group_concat(`supplement`.`denomination` separator ',') AS `options`,`lignedevente`.`id_Vente` AS `id_dv01_sale` from ((((`lignedevente` join `produit` on((`lignedevente`.`id_Produit` = `produit`.`id`))) left join `typedetaille` on((`lignedevente`.`id_TypeDeTaille` = `typedetaille`.`id`))) left join `lignedoption` on((`lignedevente`.`id` = `lignedoption`.`id_LigneDeVente`))) left join `supplement` on((`lignedoption`.`id_Supplement` = `supplement`.`id`))) group by `lignedevente`.`id` */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
@@ -93,7 +93,7 @@ SET character_set_client = @saved_cs_client;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-01-02 14:57:37
+-- Dump completed on 2025-01-02 15:02:25
 -- MySQL dump 10.13  Distrib 8.0.34, for Win64 (x86_64)
 --
 -- Host: localhost    Database: ventepizza
@@ -129,7 +129,15 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `createSale`(
     IN _onSite VARCHAR(1)
 )
 BEGIN
+    DECLARE exist INT;
     DECLARE errorMessage VARCHAR(255);
+
+    SET exist =(SELECT COUNT(*) FROM dv01_sale WHERE orderNumber != _orderNumber);
+
+    IF exist = 1 THEN
+        SET errorMessage = CONCAT('sale with id = "', _orderNumber, '" already exists');
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = errorMessage;
+    END IF;
 
     IF _onSite != 'Y' AND _onSite != 'N' THEN
         SET errorMessage = CONCAT('onSite cannot be "', _onSite, '" only "Y" or "N"');
@@ -272,4 +280,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-01-02 14:57:37
+-- Dump completed on 2025-01-02 15:02:25
