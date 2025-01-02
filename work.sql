@@ -76,7 +76,7 @@ BEGIN
     DECLARE exist INT;
     DECLARE errorMessage VARCHAR(255);
 
-    SET exist =(SELECT COUNT(*) FROM dv01_sale WHERE orderNumber != _orderNumber);
+    SET exist = (SELECT COUNT(*) FROM dv01_sale WHERE orderNumber = _orderNumber);
 
     IF exist = 1 THEN
         SET errorMessage = CONCAT('sale with id = "', _orderNumber, '" already exists');
