@@ -93,7 +93,7 @@ SET character_set_client = @saved_cs_client;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-01-02 14:42:12
+-- Dump completed on 2025-01-02 14:57:37
 -- MySQL dump 10.13  Distrib 8.0.34, for Win64 (x86_64)
 --
 -- Host: localhost    Database: ventepizza
@@ -132,11 +132,21 @@ BEGIN
     DECLARE errorMessage VARCHAR(255);
 
     IF _onSite != 'Y' AND _onSite != 'N' THEN
-        SET errorMessage = CONCAT('onSite cannot be ', _onSite, ' only "Y" or "N"');
+        SET errorMessage = CONCAT('onSite cannot be "', _onSite, '" only "Y" or "N"');
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = errorMessage;
     END IF;
 
-    INSERT INTO vente(date, numVente, id_Consommation) VALUES (CURDATE(), _orderNumber, (SELECT id FROM consommation WHERE denomination = IF(_onSite = 'Y', 'Sur Place', 'A emporter')));
+    INSERT INTO vente(date,
+                      numVente,
+                      id_Consommation
+    ) VALUES (CURDATE(),
+              _orderNumber,
+              (
+                SELECT id
+                FROM consommation
+                WHERE denomination = IF(_onSite = 'Y', 'Sur Place', 'A emporter')
+              )
+    );
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -262,4 +272,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-01-02 14:42:12
+-- Dump completed on 2025-01-02 14:57:37

@@ -76,28 +76,20 @@ BEGIN
     DECLARE errorMessage VARCHAR(255);
 
     IF _onSite != 'Y' AND _onSite != 'N' THEN
-        SET errorMessage = CONCAT('onSite cannot be ', _onSite, ' only "Y" or "N"');
+        SET errorMessage = CONCAT('onSite cannot be "', _onSite, '" only "Y" or "N"');
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = errorMessage;
     END IF;
 
-    INSERT INTO vente(date, numVente, id_Consommation) VALUES (CURDATE(), _orderNumber, (SELECT id FROM consommation WHERE denomination = IF(_onSite = 'Y', 'Sur Place', 'A emporter')));
+    INSERT INTO vente(date,
+                      numVente,
+                      id_Consommation
+    ) VALUES (CURDATE(),
+              _orderNumber,
+              (
+                SELECT id
+                FROM consommation
+                WHERE denomination = IF(_onSite = 'Y', 'Sur Place', 'A emporter')
+              )
+    );
 END //
 DELIMITER ;
-
-# DROP PROCEDURE IF EXISTS addSaleLine;
-#
-# DELIMITER //
-# CREATE PROCEDURE addSaleLine(
-#     IN _orderNumber varchar(10),
-#     IN _product varchar(50),
-#     IN _size varchar(10),
-#     IN _quantity int,
-#     IN _option1 varchar(50),
-#     IN _option2 varchar(50),
-#     IN _option3 varchar(50),
-#     IN _option4 varchar(50)
-# )
-# BEGIN
-#
-# END //
-# DELIMITER ;
