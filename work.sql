@@ -15,7 +15,8 @@ SELECT lignedevente.id,
        typedetaille.denomination AS size,
        lignedevente.quantite AS quantity,
        lignedevente.prix AS unitPrice,
-       GROUP_CONCAT(supplement.denomination SEPARATOR ', ') AS options
+       GROUP_CONCAT(supplement.denomination SEPARATOR ', ') AS options,
+       lignedevente.id_Vente AS id_dv01_sale
 FROM lignedevente
 INNER JOIN produit ON lignedevente.id_Produit = produit.id
 INNER JOIN typedetaille ON lignedevente.id_TypeDeTaille = typedetaille.id
