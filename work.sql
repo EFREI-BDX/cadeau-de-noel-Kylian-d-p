@@ -18,11 +18,10 @@ SELECT lignedevente.id,
        lignedevente.id_Vente AS id_dv01_sale
 FROM lignedevente
 INNER JOIN produit ON lignedevente.id_Produit = produit.id
-INNER JOIN typedetaille ON lignedevente.id_TypeDeTaille = typedetaille.id
+LEFT JOIN typedetaille ON lignedevente.id_TypeDeTaille = typedetaille.id
 LEFT JOIN lignedoption ON lignedevente.id = lignedoption.id_LigneDeVente
 LEFT JOIN supplement ON lignedoption.id_Supplement = supplement.id
 GROUP BY lignedevente.id;
-
 
 DROP PROCEDURE IF EXISTS getAllSales;
 
