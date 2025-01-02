@@ -23,3 +23,83 @@ INNER JOIN typedetaille ON lignedevente.id_TypeDeTaille = typedetaille.id
 LEFT JOIN lignedoption ON lignedevente.id = lignedoption.id_LigneDeVente
 LEFT JOIN supplement ON lignedoption.id_Supplement = supplement.id
 GROUP BY lignedevente.id;
+
+
+DROP PROCEDURE IF EXISTS getAllSales;
+
+DELIMITER //
+CREATE PROCEDURE getAllSales()
+BEGIN
+    SELECT * FROM dv01_Sale;
+END //
+DELIMITER ;
+
+DROP PROCEDURE IF EXISTS getSaleById;
+
+DELIMITER //
+CREATE PROCEDURE getSaleById(
+    IN _id INT
+)
+BEGIN
+    SELECT * FROM dv01_sale WHERE id = _id;
+END //
+
+
+DROP PROCEDURE IF EXISTS getAllSalesLines;
+
+DELIMITER //
+CREATE PROCEDURE getAllSalesLines()
+BEGIN
+    SELECT * FROM dv01_SaleLine;
+END //
+DELIMITER ;
+
+
+DROP PROCEDURE IF EXISTS getSaleLineById;
+
+DELIMITER //
+CREATE PROCEDURE getSaleLineById(
+    IN _id INT
+)
+BEGIN
+   SELECT * FROM dv01_saleline WHERE id = _id;
+END //
+DELIMITER ;
+
+
+DROP PROCEDURE IF EXISTS createSale;
+
+DELIMITER //
+CREATE PROCEDURE createSale(
+    IN _orderNumber VARCHAR(10),
+    IN _onSite VARCHAR(1)
+)
+BEGIN
+    DECLARE errorMessage VARCHAR(255);
+
+    IF _onSite != 'Y' AND _onSite != 'N' THEN
+        SET errorMessage = CONCAT('onSite cannot be ', _onSite, ' only "Y" or "N"');
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = errorMessage;
+    END IF;
+
+    INSERT INTO vente(date, numVente, id_Consommation) VALUES (CURDATE(), _orderNumber, (SELECT id FROM consommation WHERE denomination = IF(_onSite = 'Y', 'Sur Place', 'A emporter')));
+END //
+DELIMITER ;
+
+DROP PROCEDURE IF EXISTS createSaleLine;
+
+DELIMITER //
+CREATE PROCEDURE addSaleLine(
+    IN _orderNumber varchar(10),
+    IN _product varchar(50),
+    IN _size varchar(10),
+    IN _quantity int,
+    IN _option1 varchar(50),
+    IN _option2 varchar(50),
+    IN _option3 varchar(50),
+    IN _option4 varchar(50)
+)
+BEGIN
+
+END //
+DELIMITER ;
